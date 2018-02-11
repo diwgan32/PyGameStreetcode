@@ -1,22 +1,17 @@
+"""
+Test the library in Screen.py
+"""
+from Screen import *
 
-import sys
-import pygame
-SCREEN_SIZE = 640, 480
-BLACK = (0, 0, 0)
-class Screen:
-    def __init__(self, color):
-        pygame.init()   
-        self.screen = pygame.display.set_mode(SCREEN_SIZE)
-        pygame.display.set_caption("StreetCode Academy")
+display = Screen(BLACK)
 
-        self.clock = pygame.time.Clock()
+while 1:            
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit
 
-        if pygame.font:
-            self.font = pygame.font.Font(None,30)
-        else:
-            self.font = None
-        self.color = color
+    
+    pygame.draw.rect(display.screen, (34, 34, 34), pygame.Rect(300,350,100,100))
 
-    def forward(self):
-        self.clock.tick(50)
-        self.screen.fill(self.color)
+    pygame.display.flip()
+    display.forward()
