@@ -6,9 +6,16 @@
 """
 import sys
 import pygame
+from pygame_util import *
+
 SCREEN_SIZE = 640, 480
-BLACK = (0, 0, 0)
-ORANGE = (255,165,0)
+BLACK = T(0, 0, 0)
+ORANGE = T(255, 165, 0)
+PINK = T(255, 192, 203)
+RED = T(240, 10, 10)
+BLUE = T(0, 0, 255)
+YELLOW = T(255, 255, 0)
+
 
 class Screen:
     def __init__(self, color):
@@ -25,7 +32,7 @@ class Screen:
         self.color = color
         self.screen.fill(self.color)
         self.is_playing_game = True
-        pygame.display.flip()
+        
 
     def playing_game(self):
         return self.is_playing_game
@@ -39,4 +46,5 @@ class Screen:
                 self.is_playing_game = False
 
         self.clock.tick(50)
+        pygame.display.flip()
         
