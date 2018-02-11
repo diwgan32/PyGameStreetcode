@@ -6,7 +6,4 @@ class T(tuple):
     def __sub__(self, other):
         return self.__add__(-i for i in other)
     def _join(self, x):
-    	val = x[0]
-    	for i in x:
-    		val = val or i
-    	return val
+    	return x[0] | x[1]
