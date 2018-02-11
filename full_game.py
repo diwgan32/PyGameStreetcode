@@ -37,71 +37,7 @@ STATE_WON = 2
 STATE_GAME_OVER = 3
 
 
-def right_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_RIGHT]:
-        return True
-    return False
 
-def up_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP]:
-        return True
-    return False
-
-def down_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_DOWN]:
-        return True
-    return False
-
-def space_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_SPACE]:
-        return True
-    return False
-
-def enter_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_ENTER]:
-        return True
-    return False
-
-def w_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        return True
-    return False
-
-def a_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_a]:
-        return True
-    return False
-
-def s_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_s]:
-        return True
-    return False
-
-def d_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_d]:
-        return True
-    return False
-
-def shift_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_RSHIFT] or keys[pygame.K_LSHIFT]:
-        return True
-    return False
-
-def tab_is_pressed():
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_TAB]:
-        return True
-    return False
 
 class Bricka:
 
@@ -151,12 +87,12 @@ class Bricka:
     def check_input(self):
         keys = pygame.key.get_pressed()
         
-        if left_is_pressed():
+        if keys[pygame.K_LEFT]:
             self.paddle.left -= 5
             if self.paddle.left < 0:
                 self.paddle.left = 0
 
-        if right_is_pressed():
+        if keys[pygame.K_RIGHT]:
             self.paddle.left += 5
             if self.paddle.left > MAX_PADDLE_X:
                 self.paddle.left = MAX_PADDLE_X
