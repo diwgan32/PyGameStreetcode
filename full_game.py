@@ -36,6 +36,9 @@ STATE_PLAYING = 1
 STATE_WON = 2
 STATE_GAME_OVER = 3
 
+
+
+
 class Bricka:
 
     def __init__(self):
