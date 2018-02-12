@@ -7,6 +7,7 @@
 import sys
 import pygame
 from pygame_util import *
+import uuid
 
 SCREEN_SIZE = 640, 480
 BLACK = T(0, 0, 0)
@@ -15,8 +16,7 @@ PINK = T(255, 192, 203)
 RED = T(240, 10, 10)
 BLUE = T(0, 0, 255)
 YELLOW = T(255, 255, 0)
-
-
+    
 class Screen:
     def __init__(self, color):
         pygame.init()   
@@ -29,23 +29,68 @@ class Screen:
             self.font = pygame.font.Font(None,30)
         else:
             self.font = None
-        self.color = color
-        self.screen.fill(self.color)
+        self.screen_color = color
         self.is_playing_game = True
-        
+        self.sprites = {}
 
     def playing_game(self):
         return self.is_playing_game
 
+    def create_shape_dictionary(self, properties, shape_type, color, uuid):
+        return {'attr': properties, 'type': shape_type, 'color': color, 'uuid': uuid}
+
     def draw_rectangle(self, x, y, width, height, color):
-        pygame.draw.rect(self.screen, color, [x, y, width, height])
+        identity = uuid.uuid4().hex
+        new_rect = self.create_shape_dictionary([x, y, width, height], "rect", color, identity)
+        self.sprites[identity] = new_rect
+        return new_rect
+
+    def draw_image(self, file_name, x, y):
+        identity = uuid.uuid4().hex
+        myimage = pygame.image.load(file_name)
+        myimage.convert()
+        new_sprite = self.create_shape_dictionary([x, y, myimage], "sprite", (0, 0, 0), identity)
+
+    def move(self, shape_to_move, other):
+        if (shape_to_move['type'] == "rect"):
+            del self.sprites[shape_to_move['uuid']]
+            new_rect = self.create_shape_dictionary([shape_to_move['attr'][0] + other[0],\
+                                                shape_to_move['attr'][1] + other[1],\
+                                                shape_to_move['attr'][2], shape_to_move['attr'][3]], 
+                                               shape_to_move['type'], shape_to_move['color'],
+                                               shape_to_move['uuid'])
+
+            shape_to_move['attr'] = [shape_to_move['attr'][0] + other[0],\
+                                     shape_to_move['attr'][1] + other[1],\
+                                     shape_to_move['attr'][2], shape_to_move['attr'][3]]
+            self.sprites[shape_to_move['uuid']] = new_rect
+        if (shape_to_move['type'] == "sprite"):
+            del self.sprites[shape_to_move['uuid']]
+            new_rect = self.create_shape_dictionary([shape_to_move['attr'][0] + other[0],\
+                                                shape_to_move['attr'][1] + other[1],\
+                                                shape_to_move['attr'][2]], 
+                                               shape_to_move['type'], shape_to_move['color'],
+                                               shape_to_move['uuid'])
+
+            shape_to_move['attr'] = [shape_to_move['attr'][0] + other[0],\
+                                     shape_to_move['attr'][1] + other[1],\
+                                     shape_to_move['attr'][2]]
+            self.sprites[shape_to_move['uuid']] = new_rect
 
     def forward(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.is_playing_game = False
-
+        self.screen.fill(self.screen_color)
         self.clock.tick(50)
+        for uuid in self.sprites:
+            if (self.sprites[uuid]['type'] == "rect"):
+                pygame.draw.rect(self.screen, self.sprites[uuid]['color'], 
+                                 pygame.Rect(self.sprites[uuid]['attr']))
+            if (self.sprites[uuid]['type'] == "sprite"):
+                self.screen.blit(self.sprites['uuid']['attr'][2], (self.sprites['uuid']['attr'][0],\
+                                                                   self.sprites['uuid']['attr'][1]))
+
         pygame.display.flip()
                 
     def left_is_pressed(self):
