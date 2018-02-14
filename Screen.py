@@ -82,8 +82,8 @@ class Screen:
 
     def get_position(self, shape):
         if(shape in self.sprites):
-            return Point(x = self.sprites[shape]['attr'][0] + self.sprites[shape]['attr'][2], \
-                         y = self.sprites[shape]['attr'][1] + self.sprites[shape]['attr'][3])
+            return Point(x = self.sprites[shape]['attr'][0] + self.sprites[shape]['attr'][2]/2.0, \
+                         y = self.sprites[shape]['attr'][1] + self.sprites[shape]['attr'][3]/2.0)
 
     def apply_velocity(self):
         for shape_key in self.sprites:
