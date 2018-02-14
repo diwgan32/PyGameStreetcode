@@ -9,6 +9,7 @@ import pygame
 from pygame_util import *
 import uuid
 import numpy as np
+import collections
 
 SCREEN_SIZE = 640, 480
 BLACK = T(0, 0, 0)
@@ -19,6 +20,8 @@ BLUE = T(0, 0, 255)
 YELLOW = T(255, 255, 0)
 WHITE = T(255, 255, 255)
     
+Point = collections.namedtuple('Point', 'x y')
+
 class Screen:
     def __init__(self, color):
         pygame.init()   
@@ -79,7 +82,8 @@ class Screen:
 
     def get_position(self, shape):
         if(shape in self.sprites):
-            return self.sprites[shape]['attr'][0], self.sprites[shape]['attr'][1]
+            return Point(x = self.sprites[shape]['attr'][0] + self.sprites[shape]['attr'][2], \
+                         y = self.sprites[shape]['attr'][1] + self.sprites[shape]['attr'][3])
 
     def apply_velocity(self):
         for shape_key in self.sprites:

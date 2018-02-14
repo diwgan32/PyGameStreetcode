@@ -19,8 +19,9 @@ while display.playing_game():
     if(display.enter_is_pressed()):
         display.delete(my_shape)
     if(display.space_is_pressed()):
-        pos = display.get_position(my_shape)
-        bullet = display.draw_rectangle(pos[0], pos[1], 20, 20, RED)
+        x = display.get_position(my_shape).x
+        y = display.get_position(my_shape).y
+        bullet = display.draw_rectangle(x, y, 20, 20, RED)
         projectiles.append(bullet)
     for bullet in projectiles:
         display.move(bullet,[-10,0])
