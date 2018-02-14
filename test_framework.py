@@ -23,5 +23,5 @@ while display.playing_game():
 		display.get_position(my_shape)
 	if (display.collided_with(my_shape, new_shape)):
 		display.move(my_shape, [0, 0])
-
+	
 	display.forward()
