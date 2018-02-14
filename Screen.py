@@ -62,11 +62,12 @@ class Screen:
             self.sprites[shape_key]['velocity'] = other
 
     def delete(self, shape):
-        if(shape['uuid'] in self.sprites):
-            del self.sprites[shape['uuid']]
+        if(shape in self.sprites):
+            del self.sprites[shape]
 
     def get_position(self, shape):
-        print(shape['attr'][0],shape['attr'][1])
+        if(shape in self.sprites):
+            print(self.sprites[shape]['attr'][0], self.sprites[shape['attr'][1]])
 
     def apply_velocity(self):
         for shape_key in self.sprites:
@@ -75,7 +76,7 @@ class Screen:
                 velocity = self.sprites[shape_key]['velocity']
                 self.sprites[shape_key]['velocity'] = [0, 0]
             except:
-                return
+                pass
             self.sprites[shape_key]['attr'] = [self.sprites[shape_key]['attr'][0] + velocity[0],\
                                                self.sprites[shape_key]['attr'][1] + velocity[1],\
                                                self.sprites[shape_key]['attr'][2],
@@ -122,6 +123,8 @@ class Screen:
         return False
 
     def collided_with(self, shape1_key, shape2_key):
+        if (shape1_key not in self.sprites or shape2_key not in self.sprites):
+            return 
         shape1 = self.sprites[shape1_key]
         shape2 = self.sprites[shape2_key]
         velocity1 = [0, 0]
