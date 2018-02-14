@@ -16,6 +16,7 @@ PINK = T(255, 192, 203)
 RED = T(240, 10, 10)
 BLUE = T(0, 0, 255)
 YELLOW = T(255, 255, 0)
+WHITE = T(255, 255, 255)
     
 class Screen:
     def __init__(self, color):
@@ -32,6 +33,17 @@ class Screen:
         self.screen_color = color
         self.is_playing_game = True
         self.sprites = {}
+        
+        self.draw_rectangle(0,100,10,1,WHITE)
+        self.draw_rectangle(0,200,10,1,WHITE)
+        self.draw_rectangle(0,300,10,1,WHITE)
+        self.draw_rectangle(0,400,10,1,WHITE)
+        self.draw_rectangle(100,0,1,10,WHITE)
+        self.draw_rectangle(200,0,1,10,WHITE)
+        self.draw_rectangle(300,0,1,10,WHITE)
+        self.draw_rectangle(400,0,1,10,WHITE)
+        self.draw_rectangle(500,0,1,10,WHITE)
+        self.draw_rectangle(600,0,1,10,WHITE)
 
     def playing_game(self):
         return self.is_playing_game
@@ -82,7 +94,8 @@ class Screen:
             del self.sprites[shape['uuid']]
 
     def get_position(self, shape):
-        print(shape['attr'][0],shape['attr'][1])
+        if(shape['uuid'] in self.sprites):
+            return shape['attr'][0],shape['attr'][1]
 
     def forward(self):
         for event in pygame.event.get():
@@ -171,4 +184,5 @@ class Screen:
         if keys[pygame.K_TAB]:
             return True
         return False
+
 
