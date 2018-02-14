@@ -12,4 +12,8 @@ while display.playing_game():
        display.move(my_shape,[10,0])
     if(display.left_is_pressed()):
        display.move(my_shape,[-10,0])
+    if(display.space_is_pressed()):
+        display.delete(my_shape)
+    if(display.enter_is_pressed()):
+        display.get_position(my_shape)
     display.forward()

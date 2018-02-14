@@ -52,7 +52,7 @@ class Screen:
         new_sprite = self.create_shape_dictionary([x, y, myimage], "sprite", (0, 0, 0), identity)
 
     def move(self, shape_to_move, other):
-        if (shape_to_move['type'] == "rect"):
+        if (shape_to_move['type'] == "rect" and shape_to_move['uuid'] in self.sprites):
             del self.sprites[shape_to_move['uuid']]
             new_rect = self.create_shape_dictionary([shape_to_move['attr'][0] + other[0],\
                                                 shape_to_move['attr'][1] + other[1],\
@@ -64,7 +64,7 @@ class Screen:
                                      shape_to_move['attr'][1] + other[1],\
                                      shape_to_move['attr'][2], shape_to_move['attr'][3]]
             self.sprites[shape_to_move['uuid']] = new_rect
-        if (shape_to_move['type'] == "sprite"):
+        if (shape_to_move['type'] == "sprite" and shape_to_move['uuid'] in self.sprites):
             del self.sprites[shape_to_move['uuid']]
             new_rect = self.create_shape_dictionary([shape_to_move['attr'][0] + other[0],\
                                                 shape_to_move['attr'][1] + other[1],\
@@ -76,6 +76,13 @@ class Screen:
                                      shape_to_move['attr'][1] + other[1],\
                                      shape_to_move['attr'][2]]
             self.sprites[shape_to_move['uuid']] = new_rect
+
+    def delete(self, shape):
+        if(shape['uuid'] in self.sprites):
+            del self.sprites[shape['uuid']]
+
+    def get_position(self, shape):
+        print(shape['attr'][0],shape['attr'][1])
 
     def forward(self):
         for event in pygame.event.get():
@@ -125,7 +132,7 @@ class Screen:
 
     def enter_is_pressed(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_ENTER]:
+        if keys[pygame.K_RETURN]:
             return True
         return False
 
