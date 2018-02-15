@@ -1,10 +1,13 @@
 """
     Test the library in Screen.py
     """
+import sys
+sys.path.insert(0, '../core')
 from Screen import *
-import os
+
 display = Screen(BLACK)
 my_shape = display.draw_rectangle(100, 100, 100, 100, ORANGE)
+
 while display.playing_game():
     if(display.right_is_pressed()):
         display.move(my_shape,[3,0])
