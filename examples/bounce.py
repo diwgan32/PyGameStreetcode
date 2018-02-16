@@ -7,16 +7,16 @@ from Screen import *
 
 display = Screen(BLACK)
 
-bounce = display.draw_rectangle(10, 10, 100, 100, ORANGE)
+bounce = display.draw_circle(50, 50, 20, ORANGE)
 wall = display.draw_rectangle(0, 460, 640, 20, BLUE)
 
 velocity = 5
 while display.playing_game():
 
-	display.move(bounce, [0, velocity])
-	if (display.get_position(bounce).y > 480):
+	bounce.move([0, velocity])
+	if (bounce.get_position().y > 480):
 		velocity = -5
-	elif (display.get_position(bounce).y < 0):
+	elif (bounce.get_position().y < 0):
 		velocity = 5
 	if (display.collided_with(bounce, wall)):
 		velocity *= -1
