@@ -22,6 +22,73 @@ WHITE = T(255, 255, 255)
     
 Point = collections.namedtuple('Point', 'x y')
 
+class Sprite:
+    def __init__(self, x, y, width, height, color, uuid):
+        self._x = x
+        self._y = y
+        self._width = width
+        self._height = height
+        self._color = color
+        self._velocity = [0, 0]
+        self._uuid = uuid
+
+    def get_next_frame_bounding_box(self):
+        return [self._x + self._width/2.0 + self._velocity[0],
+                self._y + self._height/2.0 + self._velocity[1],
+                self._width,
+                self._height]
+
+    def get_current_frame_bounding_box(self):
+        return [self._x + self._width/2.0,
+                self._y + self._height/2.0,
+                self._width,
+                self._height]
+
+    def uuid(self):
+        return self._uuid
+
+    def move(self, velocity):
+        self._velocity = velocity
+
+    def reset_velocity(self):
+        self._velocity = [0, 0]
+
+    def set_velocity(self, velocity):
+        self._velocity = [velocity[0], velocity[1]]
+
+    def apply_velocity(self):
+        self._x += self._velocity[0]
+        self._y += self._velocity[1]
+        self.reset_velocity()
+
+    def get_position(self):
+        return Point(x = self._x + self._width/2.0 + self._velocity[0], \
+                     y = self._y + self._height/2.0 + self._velocity[1])
+
+
+class Rectangle(Sprite):
+    def __init__(self, x, y, width, height, color, uuid):
+        Sprite.__init__(self, x, y, width, height, color, uuid)
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self._color, 
+                         pygame.Rect([self._x, self._y, self._width, self._height]))
+
+    
+
+class Circle(Sprite):
+    def __init__(self, x, y, radius, color, uuid):
+        Sprite.__init__(self, x - radius, y - radius, radius * 2,
+                        radius * 2, color, uuid)
+        self._radius = radius
+
+    def draw(self, screen):
+        pygame.draw.circle(screen, self._color,
+                           (int(self._x + self._radius), int(self._y + self._radius)), self._radius)
+
+    def get_position(self):
+        return Point(x = self._x + self._velocity[0], y = self._y + self._velocity[1])
+
 class Screen:
     def __init__(self, color):
         pygame.init()   
@@ -53,51 +120,25 @@ class Screen:
     def playing_game(self):
         return self.is_playing_game
 
-    def create_shape_dictionary(self, properties, shape_type, color, uuid):
-        return {'attr': properties, 'type': shape_type, 'color': color, 'uuid': uuid}
-
     def draw_rectangle(self, x, y, width, height, color):
         identity = uuid.uuid4().hex
-        new_rect = self.create_shape_dictionary([x, y, width, height], "rect", color, identity)
-        self.sprites[identity] = new_rect
-        return identity
+        rect = Rectangle(x, y, width, height, color, identity)
+        self.sprites[identity] = rect
+        return rect
 
-    def draw_image(self, file_name, x, y):
+    def draw_circle(self, x, y, radius, color):
         identity = uuid.uuid4().hex
-        myimage = pygame.image.load(file_name)
-        myimage.convert()
-        new_sprite = self.create_shape_dictionary([x, y, myimage], "sprite", (0, 0, 0), identity)
-
-    def move(self, shape_key, other):
-        try:
-            shape_to_move = self.sprites[shape_key]
-        except:
-            return
-        if (self.sprites[shape_key]['type'] == "rect"):
-            self.sprites[shape_key]['velocity'] = other
+        circle = Circle(x, y, radius, color, identity)
+        self.sprites[identity] = circle
+        return circle      
 
     def delete(self, shape):
-        if(shape in self.sprites):
-            del self.sprites[shape]
-
-    def get_position(self, shape):
-        if(shape in self.sprites):
-            return Point(x = self.sprites[shape]['attr'][0] + self.sprites[shape]['attr'][2]/2.0, \
-                         y = self.sprites[shape]['attr'][1] + self.sprites[shape]['attr'][3]/2.0)
+        if(shape.uuid() in self.sprites):
+            del self.sprites[shape.uuid()]
 
     def apply_velocity(self):
         for shape_key in self.sprites:
-            velocity = [0, 0]
-            try:
-                velocity = self.sprites[shape_key]['velocity']
-                self.sprites[shape_key]['velocity'] = [0, 0]
-            except:
-                pass
-            self.sprites[shape_key]['attr'] = [self.sprites[shape_key]['attr'][0] + velocity[0],\
-                                               self.sprites[shape_key]['attr'][1] + velocity[1],\
-                                               self.sprites[shape_key]['attr'][2],
-                                               self.sprites[shape_key]['attr'][3]]
-
+            self.sprites[shape_key].apply_velocity()
 
     def forward(self):
         for event in pygame.event.get():
@@ -107,61 +148,16 @@ class Screen:
         self.clock.tick(50)
         self.apply_velocity()
         for uuid in self.sprites:
-            if (self.sprites[uuid]['type'] == "rect"):
-                pygame.draw.rect(self.screen, self.sprites[uuid]['color'], 
-                                 pygame.Rect(self.sprites[uuid]['attr']))
-            if (self.sprites[uuid]['type'] == "sprite"):
-                self.screen.blit(self.sprites['uuid']['attr'][2], (self.sprites['uuid']['attr'][0],\
-                                                                   self.sprites['uuid']['attr'][1]))
+            self.sprites[uuid].draw(self.screen)
+
         pygame.display.flip()
 
-    def _test_overlap(self, A, B):
-        w = 0.5 * (A[2] + B[2]);
-        h = 0.5 * (A[3] + B[3]);
-        dx = A[0] - B[0];
-        dy = A[1] - B[1];
-
-        if (abs(dx) <= w and abs(dy) <= h):
-        
-            wy = w * dy;
-            hx = h * dx;
-
-            if (wy > hx):
-                if (wy > -hx):
-                    return True
-                else:
-                    return True
-            else:
-                if (wy > -hx):
-                    return True
-                else:
-                    return True
-        return False
-
-    def collided_with(self, shape1_key, shape2_key):
-        if (shape1_key not in self.sprites or shape2_key not in self.sprites):
+    def collided_with(self, shape1, shape2):
+        if (shape1.uuid() not in self.sprites or shape2.uuid() not in self.sprites):
             return 
-        shape1 = self.sprites[shape1_key]
-        shape2 = self.sprites[shape2_key]
-        velocity1 = [0, 0]
-        velocity2 = [0, 0]
-        try:
-            velocity1 = shape1['velocity']
-            velocity2 = shape2['velocity']
-        except:
-            pass
 
-        rect1 = [shape1['attr'][0] + shape1['attr'][2]/2.0 + velocity1[0],
-                 shape1['attr'][1] + shape1['attr'][3]/2.0 + velocity1[1],
-                 shape1['attr'][2],
-                 shape1['attr'][3]]
-
-        rect2 = [shape2['attr'][0] + shape2['attr'][2]/2.0 + velocity2[0],
-                 shape2['attr'][1] + shape2['attr'][3]/2.0 + velocity2[1],
-                 shape2['attr'][2],
-                 shape2['attr'][3]]
-        collide = self._test_overlap(rect1, rect2)
-        
+        collide = rect_overlap(shape1.get_next_frame_bounding_box(), 
+                               shape2.get_next_frame_bounding_box())
         return collide
 
     def left_is_pressed(self):
