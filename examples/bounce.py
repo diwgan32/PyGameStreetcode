@@ -2,8 +2,8 @@
 Test the library in Screen.py
 """
 import sys
-sys.path.insert(0, '../core')
-from Screen import *
+sys.path.insert(0, '..')
+from core.Screen import *
 
 display = Screen(BLACK)
 
