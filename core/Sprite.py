@@ -85,3 +85,25 @@ class Text(Sprite):
     def draw(self, screen):
         textsurface = self._font.render(self._text, True, self._color)
         screen.blit(textsurface, (self._x, self._y))
+
+class Image(Sprite):
+    def __init__(self, x, y, image, uuid, transparant=True):
+        self._transparant = True
+        self.set_image(image)
+        Sprite.__init__(
+            self,
+            x, y,
+            self._image.get_width(),
+            self._image.get_height(),
+            None, uuid)
+
+    def set_image(self, image):
+        self._image = pygame.image.load('../resources/Sprites/'+image)
+        if self._transparant:
+            col = self._image.get_at((0, self._image.get_height()-1))
+            self._image.set_colorkey((col.r, col.g, col.b))
+        else:
+            self._image.set_colorkey(None)
+
+    def draw(self, screen):
+        screen.blit(self._image, (self._x, self._y))

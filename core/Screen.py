@@ -68,6 +68,12 @@ class Screen:
         self.sprites[identity] = text_object
         return text_object
 
+    def draw_image(self, x, y, image):
+        identity = uuid.uuid4().hex
+        image_object = Image(x, y, image, identity)
+        self.sprites[identity] = image_object
+        return image_object
+
     def delete(self, shape):
         if(shape.uuid() in self.sprites):
             del self.sprites[shape.uuid()]
