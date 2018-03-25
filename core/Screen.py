@@ -51,7 +51,8 @@ class Sprite:
         return self._uuid
 
     def move(self, velocity):
-        self._velocity = velocity
+        self._velocity[0] += velocity[0]
+        self._velocity[1] += velocity[1]
 
     def reset_velocity(self):
         self._velocity = [0, 0]
@@ -76,7 +77,6 @@ class Rectangle(Sprite):
     def draw(self, screen):
         pygame.draw.rect(screen, self._color,
                          pygame.Rect([self._x, self._y, self._width, self._height]))
-
 
 
 class Circle(Sprite):
@@ -689,12 +689,12 @@ class Screen:
             return True
         return False
 
-    def DOWN_is_pressed(self):
+    def down_is_pressed(self):
         if self.pressed[pygame.K_DOWN]:
             return True
         return False
 
-    def DOWN_is_released(self):
+    def down_is_released(self):
         if self.released[pygame.K_DOWN]:
             return True
         return False
