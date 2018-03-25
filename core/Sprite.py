@@ -11,11 +11,12 @@ class Sprite:
         self._height = height
         self._color = color
         self._velocity = [0, 0]
+        self._next_move = [0, 0]
         self._uuid = uuid
 
     def get_next_frame_bounding_box(self):
-        return [self._x + self._width/2.0 + self._velocity[0],
-                self._y + self._height/2.0 + self._velocity[1],
+        return [self._x + self._width/2.0 + self._velocity[0] + self._next_move[0],
+                self._y + self._height/2.0 + self._velocity[1] + self._next_move[1],
                 self._width,
                 self._height]
 
@@ -28,24 +29,34 @@ class Sprite:
     def uuid(self):
         return self._uuid
 
-    def move(self, velocity):
-        self._velocity[0] += velocity[0]
-        self._velocity[1] += velocity[1]
-
-    def reset_velocity(self):
-        self._velocity = [0, 0]
+    def move(self, vector):
+        self._next_move[0] += vector[0]
+        self._next_move[1] += vector[1]
 
     def set_velocity(self, velocity):
         self._velocity = [velocity[0], velocity[1]]
 
+    def get_velocity(self):
+        return Point(x = self._velocity[0], y = self._velocity[1])
+
     def apply_velocity(self):
-        self._x += self._velocity[0]
-        self._y += self._velocity[1]
-        self.reset_velocity()
+        self._x += self._next_move[0] + self._velocity[0]
+        self._y += self._next_move[1] + self._velocity[1]
+        self._next_move = [0, 0]
 
     def get_position(self):
-        return Point(x = self._x + self._width/2.0 + self._velocity[0], \
-                     y = self._y + self._height/2.0 + self._velocity[1])
+        return Point(x = self._x + self._width/2.0 + self._velocity[0] + self._next_move[0], \
+                     y = self._y + self._height/2.0 + self._velocity[1] + self._next_move[1])
+
+    def set_position(self, new_pos):
+        self._x = new_pos[0]
+        self._y = new_pos[1]
+
+    def x(self):
+        return self.get_position().x
+
+    def y(self):
+        return self.get_position().y
 
 
 class Rectangle(Sprite):
@@ -63,12 +74,14 @@ class Circle(Sprite):
                         radius * 2, color, uuid)
         self._radius = radius
 
+    def set_position(self, new_pos):
+        self._x = new_pos[0] - self._radius
+        self._y = new_pos[1] - self._radius
+
+
     def draw(self, screen):
         pygame.draw.circle(screen, self._color,
                            (int(self._x + self._radius), int(self._y + self._radius)), self._radius)
-
-    def get_position(self):
-        return Point(x = self._x + self._velocity[0], y = self._y + self._velocity[1])
 
 class Text(Sprite):
     def __init__(self, x, y, text, color, uuid, font, size):
