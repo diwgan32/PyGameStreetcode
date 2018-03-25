@@ -22,7 +22,7 @@ YELLOW = T(255, 255, 0)
 WHITE = T(255, 255, 255)
 
 #prior_key_states = (0,)*1000
-    
+
 Point = collections.namedtuple('Point', 'x y')
 
 class Sprite:
@@ -74,10 +74,10 @@ class Rectangle(Sprite):
         Sprite.__init__(self, x, y, width, height, color, uuid)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self._color, 
+        pygame.draw.rect(screen, self._color,
                          pygame.Rect([self._x, self._y, self._width, self._height]))
 
-    
+
 
 class Circle(Sprite):
     def __init__(self, x, y, radius, color, uuid):
@@ -92,11 +92,28 @@ class Circle(Sprite):
     def get_position(self):
         return Point(x = self._x + self._velocity[0], y = self._y + self._velocity[1])
 
+class Text(Sprite):
+    def __init__(self, x, y, text, color, uuid, font, size):
+        Sprite.__init__(self, x, y, 0, 0, color, uuid)
+        self._font = pygame.font.Font('/Library/Fonts/' + font + '.ttf', size)
+        self._text = text
+
+    def set_text(self, text):
+        self._text = text
+
+    def get_text(self, text):
+        return self._text
+
+    def draw(self, screen):
+        textsurface = self._font.render(self._text, True, self._color)
+        screen.blit(textsurface, (self._x, self._y))
+
 class Screen:
-    def __init__(self, color):
-        pygame.init()   
+    def __init__(self, color, title="StreetCode Academy"):
+        pygame.init()
+        pygame.font.init()
         self.screen = pygame.display.set_mode(SCREEN_SIZE)
-        pygame.display.set_caption("StreetCode Academy")
+        pygame.display.set_caption(title)
 
         self.clock = pygame.time.Clock()
 
@@ -104,10 +121,11 @@ class Screen:
             self.font = pygame.font.Font(None,30)
         else:
             self.font = None
+
         self.screen_color = color
         self.is_playing_game = True
         self.sprites = {}
-        
+
         self.draw_rectangle(0,100,10,1,WHITE)
         self.draw_rectangle(0,200,10,1,WHITE)
         self.draw_rectangle(0,300,10,1,WHITE)
@@ -128,6 +146,9 @@ class Screen:
     def playing_game(self):
         return self.is_playing_game
 
+    def quit(self):
+        self.is_playing_game = False
+
     def draw_rectangle(self, x, y, width, height, color):
         identity = uuid.uuid4().hex
         rect = Rectangle(x, y, width, height, color, identity)
@@ -138,7 +159,13 @@ class Screen:
         identity = uuid.uuid4().hex
         circle = Circle(x, y, radius, color, identity)
         self.sprites[identity] = circle
-        return circle      
+        return circle
+
+    def draw_text(self, x, y, text, color, font='arial', size=30):
+        identity = uuid.uuid4().hex
+        text_object = Text(x, y, text, color, identity, font, size)
+        self.sprites[identity] = text_object
+        return text_object
 
     def delete(self, shape):
         if(shape.uuid() in self.sprites):
@@ -172,9 +199,9 @@ class Screen:
 
     def collided_with(self, shape1, shape2):
         if (shape1.uuid() not in self.sprites or shape2.uuid() not in self.sprites):
-            return 
+            return
 
-        collide = rect_overlap(shape1.get_next_frame_bounding_box(), 
+        collide = rect_overlap(shape1.get_next_frame_bounding_box(),
                                shape2.get_next_frame_bounding_box())
         return collide
 
@@ -691,17 +718,3 @@ class Screen:
         if self.released[pygame.K_TAB]:
             return True
         return False
-
-
-
-
-
-
-
-
-
-
-
-
-
-

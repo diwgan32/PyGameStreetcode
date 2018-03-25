@@ -15,7 +15,7 @@ def rect_overlap(A, B):
     dy = A[1] - B[1];
 
     if (abs(dx) <= w and abs(dy) <= h):
-    
+
         wy = w * dy;
         hx = h * dx;
 
