@@ -3,6 +3,7 @@ sys.path.insert(0, '../core')
 from Screen import *
 
 game = Screen(BLUE)
+keyboard = game.get_keyboard()
 
 # Setup player controled paddles
 paddle_left = game.draw_rectangle(10, 200, 10, 80, WHITE)
@@ -24,15 +25,15 @@ right_text = game.draw_text(450, 30, 'Right: 0', WHITE)
 
 while game.playing_game():
     # Move the Left Paddle with W and S
-    if paddle_left.y() > 0 and game.w_is_down():
+    if paddle_left.y() > 0 and keyboard.w_is_down():
         paddle_left.move([0,-7])
-    if paddle_left.y() < 480 and game.s_is_down():
+    if paddle_left.y() < 480 and keyboard.s_is_down():
         paddle_left.move([0,7])
 
     # Move the Right Paddle with I and K
-    if paddle_right.y() > 0 and game.i_is_down():
+    if paddle_right.y() > 0 and keyboard.i_is_down():
         paddle_right.move([0,-7])
-    if paddle_right.y() < 480 and game.k_is_down():
+    if paddle_right.y() < 480 and keyboard.k_is_down():
         paddle_right.move([0,7])
 
     # Check if ball hits one of the paddles
@@ -65,7 +66,7 @@ while game.playing_game():
         ball.set_velocity([-5, -2])
 
     # Press q to quit game
-    if game.q_is_down():
+    if keyboard.q_is_down():
         game.quit()
 
     # Advance the game state

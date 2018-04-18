@@ -7,6 +7,7 @@ from Screen import *
 
 # Setup game object
 game = Screen(WHITE)
+keyboard = game.get_keyboard()
 
 # Setup text objects
 text_1 = game.draw_text(100, 100, "fast counter", BLACK, 'Comic Sans MS', 80)
@@ -30,7 +31,7 @@ while game.playing_game():
     text_3.move([0.5, 0])
 
     # Press q to quit game
-    if game.q_is_down():
+    if keyboard.q_is_down():
         game.quit()
 
     # Advance game state
