@@ -7,6 +7,7 @@ import copy
 
 from Sprite import *
 from Keyboard import *
+from Mouse import *
 from constants import *
 from pygame_util import *
 
@@ -40,6 +41,7 @@ class Screen:
         self.draw_rectangle(600,0,1,10,WHITE)
         self.collision_flag = 0
         self._keyboard = Keyboard()
+        self._mouse = Mouse()
 
 
 
@@ -84,17 +86,19 @@ class Screen:
     def forward(self):
         self._keyboard.pressed=[0,]*1000
         self._keyboard.released=[0,]*1000
+        self._mouse.pressed = {}
+        self._mouse.released = {}
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.is_playing_game = False
             if event.type == pygame.KEYDOWN:
-                #if event.key == pygame.K_SPACE:
-                #print(event.key)
                 self._keyboard.pressed[event.key]=1
             if event.type == pygame.KEYUP:
-                #if event.key == pygame.K_SPACE:
-                #print(event.key)
                 self._keyboard.released[event.key]=1
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self._mouse.pressed[event.button]=1
+            if event.type == pygame.MOUSEBUTTONUP:
+                self._mouse.released[event.button]=1
         self.screen.fill(self.screen_color)
         self.clock.tick(50)
         self.apply_velocity()
@@ -113,3 +117,6 @@ class Screen:
 
     def get_keyboard(self):
         return self._keyboard
+
+    def get_mouse(self):
+        return self._mouse
