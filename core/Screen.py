@@ -12,7 +12,7 @@ from constants import *
 from pygame_util import *
 
 class Screen:
-    def __init__(self, color, title="StreetCode Academy"):
+    def __init__(self, color, title="StreetCode Academy", show_mouse_pos=False):
         pygame.init()
         pygame.font.init()
         self.screen = pygame.display.set_mode(SCREEN_SIZE)
@@ -29,20 +29,23 @@ class Screen:
         self.is_playing_game = True
         self.sprites = {}
 
-        self.draw_rectangle(0,100,10,1,WHITE)
-        self.draw_rectangle(0,200,10,1,WHITE)
-        self.draw_rectangle(0,300,10,1,WHITE)
-        self.draw_rectangle(0,400,10,1,WHITE)
-        self.draw_rectangle(100,0,1,10,WHITE)
-        self.draw_rectangle(200,0,1,10,WHITE)
-        self.draw_rectangle(300,0,1,10,WHITE)
-        self.draw_rectangle(400,0,1,10,WHITE)
-        self.draw_rectangle(500,0,1,10,WHITE)
-        self.draw_rectangle(600,0,1,10,WHITE)
         self.collision_flag = 0
         self._keyboard = Keyboard()
         self._mouse = Mouse()
 
+        self._show_mouse_pos = show_mouse_pos
+        if self._show_mouse_pos:
+            self.draw_rectangle(0,100,10,1,WHITE)
+            self.draw_rectangle(0,200,10,1,WHITE)
+            self.draw_rectangle(0,300,10,1,WHITE)
+            self.draw_rectangle(0,400,10,1,WHITE)
+            self.draw_rectangle(100,0,1,10,WHITE)
+            self.draw_rectangle(200,0,1,10,WHITE)
+            self.draw_rectangle(300,0,1,10,WHITE)
+            self.draw_rectangle(400,0,1,10,WHITE)
+            self.draw_rectangle(500,0,1,10,WHITE)
+            self.draw_rectangle(600,0,1,10,WHITE)
+            self.mouse_pos_text = self.draw_text(0, SCREEN_SIZE[1]-17, '(0,0)', BLACK, size=12)
 
 
     def playing_game(self):
@@ -99,6 +102,9 @@ class Screen:
                 self._mouse.pressed[event.button]=1
             if event.type == pygame.MOUSEBUTTONUP:
                 self._mouse.released[event.button]=1
+        if self._show_mouse_pos:
+            x,y = self._mouse.get_position()
+            self.mouse_pos_text.set_text('({0},{1})'.format(x,y))
         self.screen.fill(self.screen_color)
         self.clock.tick(50)
         self.apply_velocity()

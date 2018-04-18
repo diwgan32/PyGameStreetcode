@@ -6,7 +6,7 @@ sys.path.insert(0, '../core')
 from Screen import *
 
 # Setup game object
-game = Screen(WHITE, title='Click to shoot')
+game = Screen(WHITE, title='Click to shoot', show_mouse_pos=True)
 keyboard = game.get_keyboard()
 mouse = game.get_mouse()
 
