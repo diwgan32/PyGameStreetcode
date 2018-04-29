@@ -80,6 +80,10 @@ class Circle(Sprite):
                         radius * 2, color, uuid)
         self._radius = radius
 
+    def get_position(self):
+        return Point(x = self._x + self._radius + self._velocity[0] + self._next_move[0], \
+                     y = self._y + self._radius + self._velocity[1] + self._next_move[1])
+
     def set_position(self, new_pos):
         self._x = new_pos[0] - self._radius
         self._y = new_pos[1] - self._radius

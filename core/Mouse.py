@@ -16,9 +16,9 @@ class Mouse:
         if isinstance(sprite, Circle):
             return math.sqrt((mx-sx)**2 + (my-sy)**2) < sprite._radius
         else:
-            sw = sprite._width/2.0
-            sh = sprite._height/2.0
-            return mx > sx-sw and my > sy-sh and mx < sx+sw and my < sy+sh
+            sw = sprite._width
+            sh = sprite._height
+            return mx > sx and my > sy and mx < sx+sw and my < sy+sh
 
     def left_is_down(self):
         buttons = pygame.mouse.get_pressed()
