@@ -45,8 +45,8 @@ class Sprite:
         self._next_move = [0, 0]
 
     def get_position(self):
-        return Point(x = self._x + self._width/2.0 + self._velocity[0] + self._next_move[0], \
-                     y = self._y + self._height/2.0 + self._velocity[1] + self._next_move[1])
+        return Point(x = self._x + self._velocity[0] + self._next_move[0], \
+                     y = self._y + self._velocity[1] + self._next_move[1])
 
     def set_position(self, new_pos):
         self._x = new_pos[0]
@@ -57,6 +57,12 @@ class Sprite:
 
     def y(self):
         return self.get_position().y
+
+    def get_color(self):
+        return self._color
+
+    def set_color(self, new_color):
+        self._color = new_color
 
 
 class Rectangle(Sprite):
